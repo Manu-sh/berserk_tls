@@ -1,3 +1,5 @@
+#define _POSIX_C_SOURCE 200809L
+
 #include <string.h>
 #include "include/tls_server.h"
 #include "include/tcp_server.h"
@@ -10,8 +12,14 @@ typedef struct {
 
 // an incoming connection
 typedef struct {
+
     SSL *ssl;
     int sk_accept;
+
+    struct {
+	char *ip;
+    };
+
 } TlsConnection;
 
 #define PORT 5000
@@ -44,8 +52,10 @@ TlsServer * TlsServer_new() {
 TlsConnection * TlsServer_connect(TlsServer *tls) {
 
 	// plain tcp socket
-	int client = tcp_server_accept_open(tls->sk_listen);
+	const int client = tcp_server_accept_open(tls->sk_listen);
 	if (client < 0) return NULL;
+
+	char *ipv4 = NULL;
 
 	{ // get ip
 		struct sockaddr_in addr;
@@ -54,13 +64,17 @@ TlsConnection * TlsServer_connect(TlsServer *tls) {
 
 		// ipv4 only, however the listen socket only listen for ipv4 connection, so it's useless
 		assert(addr.sin_family == AF_INET); 
-		fprintf(stderr, "incoming connection from [%s]\n", inet_ntoa(addr.sin_addr));
+
+		ipv4 = strdup(inet_ntoa(addr.sin_addr));
+		fprintf(stderr, "[%s] connect\n", ipv4);
 	}
 
 	// secure tcp socket
 	SSL *ssl = tls_server_tcp_secure_open(client, tls->ctx);
-	if (!ssl)
+	if (!ssl) {
+		free(ipv4);
 		return NULL;
+	}
 
 	// lazy memory allocation
 	TlsConnection *conn = calloc(1, sizeof(TlsConnection));
@@ -68,14 +82,19 @@ TlsConnection * TlsServer_connect(TlsServer *tls) {
 
 	conn->ssl = ssl;
 	conn->sk_accept = client;
+	conn->ip = ipv4;
+
 	return conn;
 }
 
 void TlsServer_disconnect(TlsConnection *conn) {
+
 	assert(conn);
+	fprintf(stderr, "[%s] disconnect\n", conn->ip);
+
 	tls_server_tcp_secure_close(conn->sk_accept, conn->ssl);
+	free(conn->ip);
 	free(conn);
-	LOG(stderr, "disconnect");
 }
 
 void TlsServer_free(TlsServer *tls) {
