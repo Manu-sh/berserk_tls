@@ -45,6 +45,7 @@ void tls_server_ctx_free(SSL_CTX *ctx) {
     SSL_CTX_free(ctx);
 }
 
+// in case of failure you must close sk_client by yourself
 SSL * tls_server_tcp_secure_open(int sk_client, SSL_CTX *ctx) {
 
     SSL *ssl = SSL_new(ctx);

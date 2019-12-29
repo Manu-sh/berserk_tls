@@ -43,17 +43,19 @@ TlsServer * TlsServer_new() {
 
 TlsConnection * TlsServer_connect(TlsServer *tls) {
 
+    // plain tcp socket
     int client = tcp_server_accept_open(tls->sk_listen);
     if (client < 0)
         return NULL;
 
+    // secure tcp socket
     SSL *ssl = tls_server_tcp_secure_open(client, tls->ctx);
     if (!ssl) {
         tcp_server_accept_close(client);
         return NULL;
     }
 
-    // lazy
+    // lazy memory allocation
     TlsConnection *conn = (TlsConnection *)calloc(1, sizeof(TlsConnection));
     assert(conn);
 
