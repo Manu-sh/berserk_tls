@@ -10,7 +10,7 @@ int tcp_server_listen_open(int port, int backlog) {
 
     const int sk = socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in addr = {
-            .sin_family      = AF_INET,
+            .sin_family      = AF_INET, // ipv4 only
             .sin_port        = htons(port),
             .sin_addr.s_addr = htonl(INADDR_ANY)
     };
@@ -44,7 +44,7 @@ int tcp_server_accept_open(int sk_listen) {
     struct sockaddr_in addr;
     socklen_t len = sizeof addr;
 
-    int client = accept(sk_listen, (struct sockaddr*)&addr, &len);
+    int client = accept(sk_listen, (struct sockaddr *)&addr, &len);
     if (client < 0) {
         LOG(stderr, "Unable to accept");
         return -1;

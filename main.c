@@ -43,44 +43,54 @@ TlsServer * TlsServer_new() {
 
 TlsConnection * TlsServer_connect(TlsServer *tls) {
 
-    // plain tcp socket
-    int client = tcp_server_accept_open(tls->sk_listen);
-    if (client < 0)
-        return NULL;
+	// plain tcp socket
+	int client = tcp_server_accept_open(tls->sk_listen);
+	if (client < 0) return NULL;
 
-    // secure tcp socket
-    SSL *ssl = tls_server_tcp_secure_open(client, tls->ctx);
-    if (!ssl)
-        return NULL;
+	{
+		struct sockaddr_in addr;
+		socklen_t len = sizeof addr;
+		getpeername(client, (struct sockaddr * )&addr, &len);
 
-    // lazy memory allocation
-    TlsConnection *conn = calloc(1, sizeof(TlsConnection));
-    assert(conn);
+		// ipv4, however the listen socket only listen for ipv4 connection, so it's useless
+		assert(addr.sin_family == AF_INET); 
 
-    conn->ssl = ssl;
-    conn->sk_accept = client;
+		LOG(stderr, inet_ntoa(addr.sin_addr));
+	}
 
-    return conn;
+	// secure tcp socket
+	SSL *ssl = tls_server_tcp_secure_open(client, tls->ctx);
+	if (!ssl)
+		return NULL;
+
+	// lazy memory allocation
+	TlsConnection *conn = calloc(1, sizeof(TlsConnection));
+	assert(conn);
+
+	conn->ssl = ssl;
+	conn->sk_accept = client;
+
+	return conn;
 }
 
 void TlsServer_disconnect(TlsConnection *conn) {
-    assert(conn);
-    tls_server_tcp_secure_close(conn->sk_accept, conn->ssl);
-    free(conn);
+	assert(conn);
+	tls_server_tcp_secure_close(conn->sk_accept, conn->ssl);
+	free(conn);
 }
 
 void TlsServer_free(TlsServer *tls) {
 
-    if (!tls) return;
+	if (!tls) return;
 
-    if (tls->ctx)
-        tls_server_ctx_free(tls->ctx);
+	if (tls->ctx)
+		tls_server_ctx_free(tls->ctx);
 
-    if (tls->sk_listen >= 0)
-        tcp_server_listen_close(tls->sk_listen);
+	if (tls->sk_listen >= 0)
+		tcp_server_listen_close(tls->sk_listen);
 
-    free(tls);
-    tls_lib_cleanup();
+	free(tls);
+	tls_lib_cleanup();
 }
 
 
@@ -89,16 +99,18 @@ void TlsServer_free(TlsServer *tls) {
 
 int main() {
 
-    TlsServer *tls = TlsServer_new();
+	TlsServer *tls = TlsServer_new();
 
 	// Handle connections
 	while(1) {
-	    TlsConnection *client = TlsServer_connect(tls);
-	    if (!client) continue;
 
-        SSL_write(client->ssl, "test\n", strlen("test\n"));
-        TlsServer_disconnect(client);
+		TlsConnection *client = TlsServer_connect(tls);
+		if (!client) continue;
+
+		SSL_write(client->ssl, "test\n", strlen("test\n"));
+		TlsServer_disconnect(client);
+
 	}
 
-    TlsServer_free(tls);
+	TlsServer_free(tls);
 }
