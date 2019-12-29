@@ -14,6 +14,11 @@ int main() {
 		if (!client) continue;
 
 		SSL_write(client->ssl, "test\n", strlen("test\n"));
+
+		char buf[16 * 1001];
+		for (int len; (len = SSL_read(client->ssl, buf, sizeof buf)) > 0;)
+			fprintf(stdout, "%.*s %d", len, buf, len);
+
 		TlsServer_disconnect(client);
 
 	}
