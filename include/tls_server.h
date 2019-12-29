@@ -60,6 +60,7 @@ SSL * tls_server_tcp_secure_open(int sk_client, SSL_CTX *ctx) {
     return ssl;
 }
 
+// this also close sk_client
 void tls_server_tcp_secure_close(int sk_client, SSL *ssl) {
 
     if (ssl) {
