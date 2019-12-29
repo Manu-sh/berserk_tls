@@ -8,7 +8,7 @@
 // onerror: -1
 int tcp_server_listen_open(int port, int backlog) {
 
-    int sk = socket(AF_INET, SOCK_STREAM, 0);
+    const int sk = socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in addr = {
             .sin_family      = AF_INET,
             .sin_port        = htons(port),
@@ -38,12 +38,11 @@ int tcp_server_listen_open(int port, int backlog) {
 void tcp_server_listen_close(int sk_listen) { close(sk_listen); }
 
 
-
 // onerror: -1
 int tcp_server_accept_open(int sk_listen) {
 
     struct sockaddr_in addr;
-    socklen_t len = sizeof(addr);
+    socklen_t len = sizeof addr;
 
     int client = accept(sk_listen, (struct sockaddr*)&addr, &len);
     if (client < 0) {

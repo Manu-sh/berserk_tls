@@ -54,7 +54,7 @@ TlsConnection * TlsServer_connect(TlsServer *tls) {
         return NULL;
 
     // lazy memory allocation
-    TlsConnection *conn = (TlsConnection *)calloc(1, sizeof(TlsConnection));
+    TlsConnection *conn = calloc(1, sizeof(TlsConnection));
     assert(conn);
 
     conn->ssl = ssl;
