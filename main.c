@@ -47,15 +47,14 @@ TlsConnection * TlsServer_connect(TlsServer *tls) {
 	int client = tcp_server_accept_open(tls->sk_listen);
 	if (client < 0) return NULL;
 
-	{
+	{ // get ip
 		struct sockaddr_in addr;
 		socklen_t len = sizeof addr;
 		getpeername(client, (struct sockaddr * )&addr, &len);
 
-		// ipv4, however the listen socket only listen for ipv4 connection, so it's useless
+		// ipv4 only, however the listen socket only listen for ipv4 connection, so it's useless
 		assert(addr.sin_family == AF_INET); 
-
-		LOG(stderr, inet_ntoa(addr.sin_addr));
+		fprintf(stderr, "incoming connection from [%s]\n", inet_ntoa(addr.sin_addr));
 	}
 
 	// secure tcp socket
@@ -69,7 +68,6 @@ TlsConnection * TlsServer_connect(TlsServer *tls) {
 
 	conn->ssl = ssl;
 	conn->sk_accept = client;
-
 	return conn;
 }
 
@@ -77,6 +75,7 @@ void TlsServer_disconnect(TlsConnection *conn) {
 	assert(conn);
 	tls_server_tcp_secure_close(conn->sk_accept, conn->ssl);
 	free(conn);
+	LOG(stderr, "disconnect");
 }
 
 void TlsServer_free(TlsServer *tls) {
