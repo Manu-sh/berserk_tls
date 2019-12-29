@@ -45,9 +45,6 @@ void tls_server_ctx_free(SSL_CTX *ctx) {
     SSL_CTX_free(ctx);
 }
 
-
-
-// TODO: here!
 // in case of failure you must close sk_client by yourself
 SSL * tls_server_tcp_secure_open(int sk_client, SSL_CTX *ctx) {
 
@@ -57,17 +54,24 @@ SSL * tls_server_tcp_secure_open(int sk_client, SSL_CTX *ctx) {
     if (SSL_accept(ssl) <= 0) {
         ERR_print_errors_fp(stderr);
         SSL_free(ssl);
+
+        if (sk_client >= 0)
+            close(sk_client);
+
         return NULL;
     }
 
     return ssl;
 }
 
-// you must close sk_client by yourself
+// this also close sk_client
 void tls_server_tcp_secure_close(int sk_client, SSL *ssl) {
 
     if (ssl) {
         SSL_shutdown(ssl);
         SSL_free(ssl);
     }
+
+    if (sk_client >= 0)
+        close(sk_client);
 }

@@ -50,10 +50,8 @@ TlsConnection * TlsServer_connect(TlsServer *tls) {
 
     // secure tcp socket
     SSL *ssl = tls_server_tcp_secure_open(client, tls->ctx);
-    if (!ssl) {
-        tcp_server_accept_close(client);
+    if (!ssl)
         return NULL;
-    }
 
     // lazy memory allocation
     TlsConnection *conn = (TlsConnection *)calloc(1, sizeof(TlsConnection));
@@ -68,7 +66,6 @@ TlsConnection * TlsServer_connect(TlsServer *tls) {
 void TlsServer_disconnect(TlsConnection *conn) {
     assert(conn);
     tls_server_tcp_secure_close(conn->sk_accept, conn->ssl);
-    tcp_server_accept_close(conn->sk_accept);
     free(conn);
 }
 
@@ -99,8 +96,7 @@ int main() {
 	    TlsConnection *client = TlsServer_connect(tls);
 	    if (!client) continue;
 
-		SSL_write(client->ssl, "test\n", strlen("test\n"));
-
+        SSL_write(client->ssl, "test\n", strlen("test\n"));
         TlsServer_disconnect(client);
 	}
 
