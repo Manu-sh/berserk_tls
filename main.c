@@ -68,6 +68,7 @@ TlsConnection * TlsServer_connect(TlsServer *tls) {
 void TlsServer_disconnect(TlsConnection *conn) {
     assert(conn);
     tls_server_tcp_secure_close(conn->sk_accept, conn->ssl);
+    tcp_server_accept_close(conn->sk_accept);
     free(conn);
 }
 
