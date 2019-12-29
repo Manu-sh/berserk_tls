@@ -1,16 +1,16 @@
 #pragma once
+#include "log.h"
 
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <assert.h>
-
-#include "tcp.h"
+#include <unistd.h>
 
 void tls_lib_init() { assert(OPENSSL_init_ssl(OPENSSL_INIT_LOAD_SSL_STRINGS, NULL)); }
 void tls_lib_cleanup() { OPENSSL_cleanup(); }
 
 // onerror: NULL
-SSL_CTX * tls_ctx_new(const char *file_pkey, const char *file_crt) {
+SSL_CTX * tls_server_ctx_new(const char *file_pkey, const char *file_crt) {
 
     SSL_CTX *ctx = SSL_CTX_new(TLS_server_method());
 
@@ -41,11 +41,11 @@ SSL_CTX * tls_ctx_new(const char *file_pkey, const char *file_crt) {
     return ctx;
 }
 
-void tls_ctx_free(SSL_CTX *ctx) {
+void tls_server_ctx_free(SSL_CTX *ctx) {
     SSL_CTX_free(ctx);
 }
 
-SSL * tls_tcp_secure_open(int sk_client, SSL_CTX *ctx) {
+SSL * tls_server_tcp_secure_open(int sk_client, SSL_CTX *ctx) {
 
     SSL *ssl = SSL_new(ctx);
     SSL_set_fd(ssl, sk_client);
@@ -59,12 +59,13 @@ SSL * tls_tcp_secure_open(int sk_client, SSL_CTX *ctx) {
     return ssl;
 }
 
-void tls_tcp_secure_close(int sk_client, SSL *ssl) {
+void tls_server_tcp_secure_close(int sk_client, SSL *ssl) {
 
     if (ssl) {
         SSL_shutdown(ssl);
         SSL_free(ssl);
     }
 
-    close(sk_client);
+    if (sk_client >= 0)
+        close(sk_client);
 }

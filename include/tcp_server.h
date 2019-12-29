@@ -6,7 +6,7 @@
 #include <arpa/inet.h>
 
 // onerror: -1
-int tcp_listen_open(int port, int backlog) {
+int tcp_server_listen_open(int port, int backlog) {
 
     int sk = socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in addr = {
@@ -35,12 +35,12 @@ int tcp_listen_open(int port, int backlog) {
     return sk;
 }
 
-void tcp_listen_close(int sk_listen) { close(sk_listen); }
+void tcp_server_listen_close(int sk_listen) { close(sk_listen); }
 
 
 
 // onerror: -1
-int tcp_accept_open(int sk_listen) {
+int tcp_server_accept_open(int sk_listen) {
 
     struct sockaddr_in addr;
     socklen_t len = sizeof(addr);
@@ -54,4 +54,4 @@ int tcp_accept_open(int sk_listen) {
     return client;
 }
 
-void tcp_accept_close(int sk_client) { close(sk_client); }
+void tcp_server_accept_close(int sk_client) { close(sk_client); }
