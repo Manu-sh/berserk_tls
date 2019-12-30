@@ -10,7 +10,7 @@ int main() {
 	// Handle connections
 	while(1) {
 
-		TlsConnection *client = TlsServer_connect(tls);
+		TlsConnection *client = TlsServer_accept(tls);
 		if (!client) continue;
 
 		SSL_write(client->ssl, "test\n", strlen("test\n"));

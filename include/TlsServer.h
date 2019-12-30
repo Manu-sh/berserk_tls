@@ -50,7 +50,7 @@ TlsServer * TlsServer_new() {
     return tls;
 }
 
-TlsConnection * TlsServer_connect(TlsServer *tls) {
+TlsConnection * TlsServer_accept(TlsServer *tls) {
 
 	// plain tcp socket
 	const int client = tcp_server_accept_open(tls->sk_listen);
