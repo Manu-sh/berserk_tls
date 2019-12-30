@@ -13,7 +13,7 @@ int main() {
 		TlsConnection *client = TlsServer_accept(instance);
 		if (!client) continue;
 
-		SSL_write(client->ssl, "test\n", strlen("test\n"));
+		SSL_write(client->ssl, "test server\n", strlen("test server\n"));
 
 		char buf[16 * 1001];
 		for (int len; (len = SSL_read(client->ssl, buf, sizeof buf)) > 0;)

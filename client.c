@@ -1,4 +1,5 @@
 #include "tls_client/TlsClient.h"
+#include <string.h>
 
 int main() {
 
@@ -16,6 +17,13 @@ int main() {
 		goto failure;
 
 	printf("%s [OK]\n", instance->hsinfo->hostname);
+
+	SSL_write(instance->ssl, "test client\n", strlen("test client\n"));
+
+	char buf[16 * 1001];
+	for (int len; (len = SSL_read(instance->ssl, buf, sizeof buf)) > 0;)
+		fprintf(stdout, "%.*s %d", len, buf, len);
+
 	TlsClient_free(instance);
 	return EXIT_SUCCESS;
 
