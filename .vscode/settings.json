@@ -7,6 +7,8 @@
 		"inet.h": "c",
 		"ssl.h": "c",
 		"stdlib.h": "c",
-		"tlsserver.h": "c"
+		"tlsserver.h": "c",
+		"tls_server.h": "c",
+		"tcp_server.h": "c"
 	}
 }

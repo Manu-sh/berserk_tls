@@ -5,11 +5,6 @@
 #include "tls_server.h"
 #include "tcp_server.h"
 
-#define PORT 5000
-#define BACKLOG 5
-#define CRT_FILE "crt.pem"
-#define KEY_FILE "key.pem"
-
 // the main context
 typedef struct {
 	SSL_CTX *ctx;
@@ -28,20 +23,22 @@ typedef struct {
 
 } TlsConnection;
 
-TlsServer * TlsServer_new() {
+#define BACKLOG 5
+
+TlsServer * TlsServer_new(int port, const char *key_file, const char *crt_file) {
 
 	tls_lib_init();
 	TlsServer *tls = calloc(1, sizeof(TlsServer));
 	assert(tls);
 
 	// listen socket
-	if ((tls->sk_listen = tcp_server_listen_open(PORT, BACKLOG)) < 0) {
+	if ((tls->sk_listen = tcp_server_listen_open(port, BACKLOG)) < 0) {
 		free(tls);
 		return NULL;
 	}
 
 	// load private key & public key
-	if (!(tls->ctx = tls_server_ctx_new(KEY_FILE, CRT_FILE))) {
+	if (!(tls->ctx = tls_server_ctx_new(key_file, crt_file))) {
 		close(tls->sk_listen);
 		free(tls);
 		return NULL;

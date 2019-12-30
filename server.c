@@ -1,14 +1,14 @@
 #include "tls_server/TlsServer.h"
+#include <stdlib.h>
 
 // TO TEST:
 // openssl s_client -connect localhost:5000 -tls1 -key key.pem
 
 int main() {
 
-	TlsServer *instance = TlsServer_new();
+	TlsServer *instance = TlsServer_new(5000, "key.pem", "crt.pem");
 
-	// Handle connections
-	while(1) {
+	while (1) { // Handle connections
 
 		TlsConnection *client = TlsServer_accept(instance);
 		if (!client) continue;
@@ -24,4 +24,5 @@ int main() {
 	}
 
 	TlsServer_free(instance);
+	return EXIT_SUCCESS;
 }
