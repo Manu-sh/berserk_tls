@@ -1,5 +1,6 @@
 #include "tls_server/TlsServer.h"
 #include <stdlib.h>
+#include <string.h>
 
 // TO TEST:
 // openssl s_client -connect localhost:5000 -tls1 -key key.pem

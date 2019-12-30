@@ -6,8 +6,10 @@ LDLIBS=`pkg-config --libs openssl libcrypto`
 
 all: server.c client.c
 	make -C tls_client
+	make -C tls_server
+
 	$(CC) -o client client.c $(LDLIBS) $(CFLAGS) tls_client/libtlsc.a
-	$(CC) -o server server.c $(LDLIBS) $(CFLAGS)
+	$(CC) -o server server.c $(LDLIBS) $(CFLAGS) tls_server/libtlss.a
 
 clean:
-	rm -f client server tls_client/*.{o,a}
+	rm -f client server tls_{client,server}/*.{o,a}

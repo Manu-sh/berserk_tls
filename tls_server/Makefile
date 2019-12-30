@@ -1,14 +1,14 @@
-CFLAGS=-O3 -pipe -Wall -Wextra -Wno-unused-function -pedantic -std=c99
+CFLAGS=-O3 -pipe -Wall -Wextra -Wno-unused-function -pedantic -std=c11
 LDLIBS=`pkg-config --libs openssl libcrypto`
-libtlsc=libtlsc
+libtlss=libtlss
 
 .PHONY: clean all
 
-all: $(libtlsc).a
+all: $(libtlss).a
 
-$(libtlsc).a: TlsClient.c TlsClient.h
-	$(CC)  -c TlsClient.c $(CFLAGS)
-	$(AR) rcs $(libtlsc).a TlsClient.o
+$(libtlss).a: TlsServer.c TlsServer.h
+	$(CC)  -c TlsServer.c $(CFLAGS)
+	$(AR) rcs $(libtlss).a TlsServer.o
 
 clean:
 	rm -fv *.o *.a

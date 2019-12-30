@@ -3,3 +3,5 @@ client
 server
 tls_client/*.o
 tls_client/*.a
+tls_server/*.o
+tls_server/*.a
