@@ -1,2 +1,5 @@
 .idea/
-main
+client
+server
+tls_client/*.o
+tls_client/*.a
