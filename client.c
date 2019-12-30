@@ -2,27 +2,27 @@
 
 int main() {
 
-	TlsClient *client;
+	TlsClient *instance;
 
-	if (!(client = TlsClient_new("localhost", "5000"))) {
+	if (!(instance = TlsClient_new("localhost", "5000"))) {
 		fprintf(stderr, "err init\n");
 		return EXIT_FAILURE;
 	}
 
-	if (!TlsClient_loadCA(client, "crt.pem"))
+	if (!TlsClient_loadCA(instance, "crt.pem"))
 		goto failure;
 
-	if (!TlsClient_doHandShake(client, -1))
+	if (!TlsClient_doHandShake(instance, -1))
 		goto failure;
 
-	printf("%s [OK]\n", client->hsinfo->hostname);
-	TlsClient_free(client);
+	printf("%s [OK]\n", instance->hsinfo->hostname);
+	TlsClient_free(instance);
 	return EXIT_SUCCESS;
 
 failure:
-	printf("%s [BAD]\n", client->hsinfo->hostname);
-	printf("error: %s\n", TlsClient_getError(client));
-	TlsClient_free(client);
+	printf("%s [BAD]\n", instance->hsinfo->hostname);
+	printf("error: %s\n", TlsClient_getError(instance));
+	TlsClient_free(instance);
 	return EXIT_FAILURE;
 
 }

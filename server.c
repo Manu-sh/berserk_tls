@@ -5,12 +5,12 @@
 
 int main() {
 
-	TlsServer *tls = TlsServer_new();
+	TlsServer *instance = TlsServer_new();
 
 	// Handle connections
 	while(1) {
 
-		TlsConnection *client = TlsServer_accept(tls);
+		TlsConnection *client = TlsServer_accept(instance);
 		if (!client) continue;
 
 		SSL_write(client->ssl, "test\n", strlen("test\n"));
@@ -23,5 +23,5 @@ int main() {
 
 	}
 
-	TlsServer_free(tls);
+	TlsServer_free(instance);
 }
