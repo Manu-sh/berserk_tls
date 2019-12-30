@@ -8,7 +8,7 @@
 // onerror: -1
 int tcp_server_listen_open(int port, int backlog) {
 
-    const int sk = socket(AF_INET, SOCK_STREAM, 0);
+    const int sk = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     struct sockaddr_in addr = {
             .sin_family      = AF_INET, // ipv4 only
             .sin_port        = htons(port),

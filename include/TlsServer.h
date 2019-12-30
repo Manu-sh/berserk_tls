@@ -31,7 +31,7 @@ typedef struct {
 TlsServer * TlsServer_new() {
 
     tls_lib_init();
-    TlsServer *tls = (TlsServer *)calloc(1, sizeof(TlsServer));
+    TlsServer *tls = calloc(1, sizeof(TlsServer));
     assert(tls);
 
     // listen socket
