@@ -1,0 +1,11 @@
+{
+	"files.associations": {
+		"*.imported": "less",
+		"tlsclient.h": "c",
+		"types.h": "c",
+		"in.h": "c",
+		"inet.h": "c",
+		"ssl.h": "c",
+		"stdlib.h": "c"
+	}
+}

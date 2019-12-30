@@ -10,4 +10,4 @@ all: server.c client.c
 	$(CC) -o server server.c $(LDLIBS) $(CFLAGS)
 
 clean:
-	rm -f main
+	rm -f client server tls_client/*.{o,a}
