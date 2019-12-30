@@ -12,42 +12,42 @@
 
 // the main context
 typedef struct {
-    SSL_CTX *ctx;
-    int sk_listen;
+	SSL_CTX *ctx;
+	int sk_listen;
 } TlsServer;
 
 // an incoming connection
 typedef struct {
 
-    SSL *ssl;
-    int sk_accept;
+	SSL *ssl;
+	int sk_accept;
 
-    struct {
-	char *ip;
-    };
+	struct {
+		char *ip;
+	};
 
 } TlsConnection;
 
 TlsServer * TlsServer_new() {
 
-    tls_lib_init();
-    TlsServer *tls = calloc(1, sizeof(TlsServer));
-    assert(tls);
+	tls_lib_init();
+	TlsServer *tls = calloc(1, sizeof(TlsServer));
+	assert(tls);
 
-    // listen socket
-    if ((tls->sk_listen = tcp_server_listen_open(PORT, BACKLOG)) < 0) {
-        free(tls);
-        return NULL;
-    }
+	// listen socket
+	if ((tls->sk_listen = tcp_server_listen_open(PORT, BACKLOG)) < 0) {
+		free(tls);
+		return NULL;
+	}
 
-    // load private key & public key
-    if (!(tls->ctx = tls_server_ctx_new(KEY_FILE, CRT_FILE))) {
-        close(tls->sk_listen);
-        free(tls);
-        return NULL;
-    }
+	// load private key & public key
+	if (!(tls->ctx = tls_server_ctx_new(KEY_FILE, CRT_FILE))) {
+		close(tls->sk_listen);
+		free(tls);
+		return NULL;
+	}
 
-    return tls;
+	return tls;
 }
 
 TlsConnection * TlsServer_accept(TlsServer *tls) {
