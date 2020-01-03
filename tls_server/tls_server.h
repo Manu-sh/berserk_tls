@@ -20,7 +20,7 @@ SSL_CTX * tls_server_ctx_new(const char *file_pkey, const char *file_crt) {
 		return NULL;
 	}
 
-	SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, NULL);
+	SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER|SSL_VERIFY_FAIL_IF_NO_PEER_CERT, NULL);
 	SSL_CTX_set_verify_depth(ctx, 1);
 
 	// exclude old protocol version
@@ -37,6 +37,15 @@ SSL_CTX * tls_server_ctx_new(const char *file_pkey, const char *file_crt) {
 		ERR_print_errors_fp(stderr);
 		return NULL;
 	}
+
+/*
+	if ((SSL_CTX_load_verify_locations(ctx, NULL, "/home/user/berserk_tls/crt.pem")) != 1) {
+		ERR_print_errors_fp(stderr);
+		return NULL;
+	}
+*/
+
+	// SSL_CTX_set_client_CA_list(ctx, SSL_load_client_CA_file(file_crt));
 
 	return ctx;
 }

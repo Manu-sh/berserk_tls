@@ -9,6 +9,7 @@
 		"stdlib.h": "c",
 		"tlsserver.h": "c",
 		"tls_server.h": "c",
-		"tcp_server.h": "c"
+		"tcp_server.h": "c",
+		"string.h": "c"
 	}
 }
