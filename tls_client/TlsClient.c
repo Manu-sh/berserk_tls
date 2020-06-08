@@ -261,12 +261,27 @@ TlsClient * TlsClient_new(const char *hostname, const char *port) {
 
 	// exclude old protocol version
 	SSL_CTX_set_min_proto_version(cl->ctx, TLS1_VERSION);
-	//SSL_CTX_set_max_proto_version(cl->ctx, TLS1_2_VERSION);
+	SSL_CTX_set_max_proto_version(cl->ctx, TLS1_3_VERSION);
 
 	// TODO create my own callback ?
 	// SSL_CTX_set_cert_verify_callback(cl->ctx, NULL, NULL);
 
 	return cl;
+}
+
+bool TlsClient_loadKeys(TlsClient *cl, const char *crt, const char *key) {
+
+	if (SSL_CTX_use_certificate_file(cl->ctx, crt, SSL_FILETYPE_PEM) <= 0) {
+		seterr(cl, "SSL_CTX_use_certificate_file(): ", crt);
+		return false;
+	}
+
+	if (SSL_CTX_use_PrivateKey_file(cl->ctx, key, SSL_FILETYPE_PEM) <= 0) {
+		seterr(cl, "SSL_CTX_use_PrivateKey_file(): ", key);
+		return false;
+	}
+
+	return true;
 }
 
 // set CA file or folder for crt validation sent by the host, two default value CA_FILE, and CA_CERT (should be renamed)
@@ -295,7 +310,7 @@ bool TlsClient_loadCA(TlsClient *cl, const char *ca) {
 		case S_IFREG:
 			SSL_CTX_set_verify_depth(cl->ctx, VFY_DEPTH);
 			if ((SSL_CTX_load_verify_locations(cl->ctx, ca, NULL)) != 1) {
-				seterr(cl, "SSL_CTX_load_verify_locations():", "load ca from path: failure");
+				seterr(cl, "SSL_CTX_load_verify_locations():", "load ca from file: failure");
 				goto fail;
 			}
 			break;
@@ -309,7 +324,6 @@ bool TlsClient_loadCA(TlsClient *cl, const char *ca) {
 			seterr(cl, "SslClient_loadCA(): ", "the ca argument must to be a directory path or a regular file");
 			goto fail;
 	}
-
 
 	close(fd);
 	return true;
@@ -337,16 +351,6 @@ bool TlsClient_doHandShake(TlsClient *cl, int sk) {
 
 	SSL_set_mode(cl->ssl, SSL_MODE_AUTO_RETRY);
 
-#if 1
-	int res = SSL_use_certificate_file(cl->ssl, "ca-cert.pem", SSL_FILETYPE_PEM);
-	if (res <= 0)
-		return false;
-
-	res = SSL_use_PrivateKey_file(cl->ssl, "ca-key.pem", SSL_FILETYPE_PEM);
-	if (res <= 0) 
-		return false;
-#endif
-
 	// SSL_connect() == SSL_set_connect_state(cl->ssl) (required for setting ssl handshake in client mode) + SSL_do_handshake()
 	if (SSL_connect(cl->ssl) != 1) {
 		seterr(cl, "SSL_connect(): ", ERR_GET_STR());
@@ -369,7 +373,18 @@ const char * TlsClient_getError(TlsClient *cl) {
 
 void TlsClient_free(TlsClient *cl) {
 	if (!cl) return;
-	if (cl->tcp_sk != -1) close(cl->tcp_sk);
+
+	if (cl->tcp_sk != -1) {
+
+		while (!SSL_shutdown(cl->ssl)) {
+			fprintf(stdout, "shutting down\n");
+			sleep(1);
+		}
+
+		// shutdown(cl->tcp_sk, SHUT_RDWR);
+		close(cl->tcp_sk);
+	}
+
 	SSL_free(cl->ssl);
 	SSL_CTX_free(cl->ctx);
 	X509_free(cl->cert);

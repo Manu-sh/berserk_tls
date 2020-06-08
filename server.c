@@ -1,6 +1,7 @@
 #include "tls_server/TlsServer.h"
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 // TO TEST:
 // openssl s_client -connect localhost:5000 -tls1 -key key.pem
@@ -8,6 +9,7 @@
 int main() {
 
 	TlsServer *instance = TlsServer_new(5000, "key.pem", "crt.pem");
+	assert(instance);
 
 	while (1) { // Handle connections
 

@@ -10,6 +10,9 @@ int main() {
 		return EXIT_FAILURE;
 	}
 
+	if (!TlsClient_loadKeys(instance, "crt.pem", "key.pem"))
+		goto failure;
+
 	if (!TlsClient_loadCA(instance, "crt.pem"))
 		goto failure;
 
@@ -26,10 +29,12 @@ int main() {
 		fprintf(stdout, "%.*s %d", len, buf, len);
 #endif
 
-
+#if 0
 	unsigned char buf = '\33';
 	SSL_write(instance->ssl, &buf, sizeof buf);
+#endif
 
+	SSL_write(instance->ssl, "test client\n", strlen("test client\n"));
 
 	TlsClient_free(instance);
 	return EXIT_SUCCESS;

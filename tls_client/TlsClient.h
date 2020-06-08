@@ -38,8 +38,15 @@ typedef struct {
 	int	   tcp_sk;
 } TlsClient;
 
+// a basic context initialization, this should not fail
 TlsClient * TlsClient_new(const char *hostname, const char *port);
+
+// load keys for client authentication
+bool TlsClient_loadKeys(TlsClient *cl, const char *crt, const char *key);
+
+// load keys for checking server authorization
 bool TlsClient_loadCA(TlsClient *cl, const char *ca);
+
 bool TlsClient_doHandShake(TlsClient *cl, int sk);
 const char * TlsClient_getError(TlsClient *cl);
 void TlsClient_free(TlsClient *cl);
