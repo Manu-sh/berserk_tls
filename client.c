@@ -29,12 +29,10 @@ int main() {
 		fprintf(stdout, "%.*s %d", len, buf, len);
 #endif
 
-#if 0
+#if 1
 	unsigned char buf = '\33';
 	SSL_write(instance->ssl, &buf, sizeof buf);
 #endif
-
-	SSL_write(instance->ssl, "test client\n", strlen("test client\n"));
 
 	TlsClient_free(instance);
 	return EXIT_SUCCESS;

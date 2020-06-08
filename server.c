@@ -32,7 +32,6 @@ int main() {
 			puts("LED OFF");
 
 		TlsServer_disconnect(client);
-
 	}
 
 	TlsServer_free(instance);
