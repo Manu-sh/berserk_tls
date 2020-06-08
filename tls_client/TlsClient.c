@@ -261,7 +261,7 @@ TlsClient * TlsClient_new(const char *hostname, const char *port) {
 
 	// exclude old protocol version
 	SSL_CTX_set_min_proto_version(cl->ctx, TLS1_VERSION);
-	SSL_CTX_set_max_proto_version(cl->ctx, TLS1_2_VERSION);
+	//SSL_CTX_set_max_proto_version(cl->ctx, TLS1_2_VERSION);
 
 	// TODO create my own callback ?
 	// SSL_CTX_set_cert_verify_callback(cl->ctx, NULL, NULL);
@@ -336,6 +336,16 @@ bool TlsClient_doHandShake(TlsClient *cl, int sk) {
 	}
 
 	SSL_set_mode(cl->ssl, SSL_MODE_AUTO_RETRY);
+
+#if 1
+	int res = SSL_use_certificate_file(cl->ssl, "ca-cert.pem", SSL_FILETYPE_PEM);
+	if (res <= 0)
+		return false;
+
+	res = SSL_use_PrivateKey_file(cl->ssl, "ca-key.pem", SSL_FILETYPE_PEM);
+	if (res <= 0) 
+		return false;
+#endif
 
 	// SSL_connect() == SSL_set_connect_state(cl->ssl) (required for setting ssl handshake in client mode) + SSL_do_handshake()
 	if (SSL_connect(cl->ssl) != 1) {
