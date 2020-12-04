@@ -1,4 +1,4 @@
-CFLAGS=-std=c11 -O3 -Wall -Wextra -funroll-loops -ffast-math -pipe -pedantic -fstack-protector-all -fsanitize=address -fsanitize=undefined
+CFLAGS=-std=c11 -O3 -Wall -Wextra -funroll-loops -ffast-math -pipe -pedantic #-fstack-protector-all -fsanitize=address -fsanitize=undefined -g
 CXXFLAGS=$(CFLAGS)
 LDLIBS=`pkg-config --libs openssl libcrypto`
 
