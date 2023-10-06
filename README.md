@@ -1,5 +1,5 @@
 # berserk_tls
-this was initially a private repo that I made public, basically implement the mutal TLS authentication ([mTLS](https://en.wikipedia.org/wiki/Mutual_authentication)) aka ssl duplex
+this was initially a private repo that I made public, basically implement the mutal TLS authentication ([mTLS](https://en.wikipedia.org/wiki/Mutual_authentication)) aka ssl duplex (authentication)
 
 
 #### server
