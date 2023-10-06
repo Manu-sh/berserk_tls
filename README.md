@@ -1,4 +1,6 @@
 # berserk_tls
+this was initially a private repo that I made public, basically implement the mutal TLS authentication ([mTLS](https://en.wikipedia.org/wiki/Mutual_authentication)) aka ssl duplex
+
 
 #### server
 `openssl s_server -cert crt.pem -key key.pem -port 5000 -CAfile crt.pem -verify_return_error -Verify 1`
