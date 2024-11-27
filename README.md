@@ -24,3 +24,6 @@ use an openssl client to test the server
 
 ##### other resources
 - https://knowledge.digicert.com/tutorials/create-pem-file-for-tls-ssl-certificate-installations
+
+
+###### Copyright © 2024, [Manu-sh](https://github.com/Manu-sh), s3gmentationfault@gmail.com. Released under the [MIT license](LICENSE).
