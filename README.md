@@ -20,3 +20,6 @@ use an openssl client to test the server
 ##### the first (testing ssl) is most important
 - https://stackoverflow.com/questions/21050366/testing-ssl-tls-client-authentication-with-openssl
 - https://stackoverflow.com/questions/17024769/openssl-client-not-sending-client-certificate
+
+##### other resources
+- https://knowledge.digicert.com/tutorials/create-pem-file-for-tls-ssl-certificate-installations
