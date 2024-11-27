@@ -15,6 +15,7 @@ use an openssl server to test the client
 use an openssl client to test the server
 
 `openssl s_client -cert crt.pem -key key.pem -CAfile crt.pem -connect localhost:5000`
+
 `curl -k --cert crt.pem --key key.pem https://localhost:5000/sad`
 
 ##### the first (testing ssl) is most important
