@@ -2,6 +2,7 @@
 #include "log.h"
 
 #include <unistd.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
@@ -9,11 +10,13 @@
 int tcp_server_listen_open(int port, int backlog) {
 
 	const int sk = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	struct sockaddr_in addr = {
-		.sin_family      = AF_INET, // ipv4 only
-		.sin_port        = htons(port),
-		.sin_addr.s_addr = htonl(INADDR_ANY)
-	};
+
+	struct sockaddr_in addr;
+	memset(&addr, 0, sizeof addr); // POSIX
+
+	addr.sin_family      = AF_INET; // ipv4 only
+	addr.sin_port        = htons(port);
+	addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	if (sk < 0) {
 		LOG(stderr, "Unable to create socket");

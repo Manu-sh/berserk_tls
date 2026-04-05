@@ -101,7 +101,7 @@ static bool TlsClient_doTcp(TlsClient *cl) {
 	}
 
 	struct sockaddr_in sockdata;
-	memset(&sockdata, 0, sizeof(struct sockaddr_in));
+	memset(&sockdata, 0, sizeof sockdata);
 
 	sockdata.sin_port = htons((uint16_t)atoi(cl->hsinfo->port));
 	sockdata.sin_family = AF_INET;
